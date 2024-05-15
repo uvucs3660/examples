@@ -6,19 +6,19 @@ import 'package:shelf_cors_headers/shelf_cors_headers.dart';
 import 'package:shelf_router/shelf_router.dart';
 
 // Replace these with your actual database credentials
-const String dbHost = 'your_db_host';
+const String dbHost = 'localhost';
 const String dbPort = '5432';
-const String dbName = 'your_db_name';
-const String dbUser = 'your_db_user';
-const String dbPassword = 'your_db_password';
+const String dbName = 'cs3660';
+const String dbUser = 'root';
+const String dbPassword = 'root';
 
 Future<Response> _getDataHandler(Request request, String path) async {
   final connection = await Connection.open(
     Endpoint(
-      host: 'localhost',
-      database: 'cs3660',
-      username: 'root',
-      password: 'root',
+      host: dbHost,
+      database: dbName,
+      username: dbUser,
+      password: dbPassword,
     ),
     // The postgres server hosted locally doesn't have SSL by default. If you're
     // accessing a postgres server over the Internet, the server should support
@@ -27,7 +27,7 @@ Future<Response> _getDataHandler(Request request, String path) async {
   );
 
   final results = await connection.execute(
-      'SELECT * FROM document_store WHERE path = @path',
+      Sql.named('SELECT * FROM document_store WHERE path = @path'),
       parameters: {'path': path});
   await connection.close();
 
@@ -55,10 +55,10 @@ Future<Response> _postDataHandler(Request request) async {
 
   final connection = await Connection.open(
     Endpoint(
-      host: 'localhost',
-      database: 'cs3660',
-      username: 'root',
-      password: 'root',
+      host: dbHost,
+      database: dbName,
+      username: dbUser,
+      password: dbPassword,
     ),
     // The postgres server hosted locally doesn't have SSL by default. If you're
     // accessing a postgres server over the Internet, the server should support
@@ -66,7 +66,8 @@ Future<Response> _postDataHandler(Request request) async {
     settings: ConnectionSettings(sslMode: SslMode.disable),
   );
   await connection.execute(
-      'INSERT INTO document_store (path, data) VALUES (@path, @data)',
+      Sql.named(
+          'INSERT INTO document_store (path, data) VALUES (@path, @data)'),
       parameters: {'path': path, 'data': jsonEncode(data)});
   await connection.close();
 
