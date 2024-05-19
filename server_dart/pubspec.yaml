@@ -12,9 +12,13 @@ dependencies:
   shelf_router: ^1.0.0
   shelf_cors_headers: ^0.1.5
   postgres: ^3.2.0
-  json_annotation: ^4.5.0
+  json_annotation: ^4.9.0
+  dia: ^0.1.5
+  dia_cors: ^0.1.2
+  dia_router: ^0.1.7
 
 dev_dependencies:
   lints: ^4.0.0
   test: ^1.24.0
   json_serializable: ^6.1.6
+  build_runner: ^2.4.9
