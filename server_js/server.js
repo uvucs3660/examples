@@ -1,9 +1,9 @@
-// npm install koa koa-router koa-static koa-cors pg
+// npm install koa koa-router koa-static koa-cors pg mqtt
 //
 // path structure
 // class/members
 // class/team_roster
-// presentation/projectX/teamY
+// presentation/projectX/teamY/
 // gitstatus/projectX/teamY
 // survey/projectX/teamY
 // easywork/projectX/teamY
@@ -17,46 +17,54 @@ const Koa = require('koa');
 const Router = require('koa-router');
 const serve = require('koa-static');
 const cors = require('koa-cors');
+const { bodyParser } = require("@koa/bodyparser");
 const path = require('path');
-const { Pool } = require('pg');
 const fs = require('fs');
 const { execSync } = require('child_process');
+const mqtt = require('mqtt');
+const { load, save } = require('./store');
 
 const app = new Koa();
 const router = new Router();
 const port = 3000;
 
-const pool = new Pool({
-  connectionString: process.env.CLASS_DB_URL
+// Connect to MQTT broker
+const client = mqtt.connect('mqtt://broker.hivemq.com');
+
+client.on('connect', () => {
+  console.log('Connected to MQTT broker');
+  client.subscribe('load/#');
+  client.subscribe('save/#');
+});
+
+client.on('message', async (topic, message) => {
+  const path = topic.split('/')[1];
+  if (topic.startsWith('save/')) {
+    const data = JSON.parse(message.toString());
+    await save(path, data);
+  } else if (topic.startsWith('load/')) {
+    const result = await load(path);
+    client.publish(`data/${path}`, JSON.stringify(result.rows));
+  }
 });
 
 // Middleware
 app.use(cors());
+app.use(bodyParser());
 
 // Routes
-router.get('/data', async (ctx) => {
-  const client = await pool.connect();
-  try {
-    const result = await client.query('SELECT * FROM document_store where path = $1', ctx.query.path);
-    ctx.body = result.rows;
-  } finally {
-    client.release();
-  }
+router.get('/data/:path*', async (ctx) => {
+  let path = ctx.params.path;
+  const result = await load(path);
+  ctx.body = result.rows;
 });
 
 // Routes
-router.post('/data', async (ctx) => {
-  const client = await pool.connect();
-  try {
-    const result = await client.query(`
-        insert into document_store (path, data) values ($1, $2)
-        on conflict (path) do update set data = $2 returning path;`,
-        ctx.request.body.path,
-        ctx.request.body.data);
-    ctx.body = result.rows;
-  } finally {
-    client.release();
-  }
+router.post('/data/:path*', async (ctx) => {
+  let path = ctx.params.path;
+  const result = await save(path, ctx.request.rawBody);
+  ctx.body = result.rows;
+  ctx.body[0]['data'] = ctx.request.body;
 });
 
 app.use(router.routes()).use(router.allowedMethods());
