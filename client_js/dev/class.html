@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Team Generator with Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        #team-results, #report-results {
+            margin-top: 20px;
+        }
+        .team-set {
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .team, .student-report {
+            margin-bottom: 10px;
+        }
+    </style>
+    <script>
+        function generateTeams(students, teamSize, sets) {
+            if (students.length % teamSize !== 0) {
+                console.error('The number of students should be divisible by the team size.');
+                return [];
+            }
+
+            // Initialize an empty array to hold all the team sets
+            let allSets = [];
+            let allPairs = new Map();
+
+            // Function to check if a pair exists within the map
+            function hasPair(s1, s2) {
+                let pairKey = s1 < s2 ? `${s1}-${s2}` : `${s2}-${s1}`;
+                return allPairs.has(pairKey);
+            }
+
+            // Function to record pairs between students
+            function addPair(s1, s2) {
+                let pairKey = s1 < s2 ? `${s1}-${s2}` : `${s2}-${s1}`;
+                allPairs.set(pairKey, (allPairs.get(pairKey) || 0) + 1);
+            }
+
+            // Create teams for each set
+            for (let i = 0; i < sets; i++) {
+                let currentSet = [];
+                let studentsCopy = [...students];
+
+                // Create teams while reducing the overlap in pairs
+                while (studentsCopy.length >= teamSize) {
+                    let team = [];
+
+                    for (let j = 0; j < teamSize; j++) {
+                        let selectedIndex = studentsCopy.findIndex(student => {
+                            // Check that the selected student hasn't been overly paired with the others in this team
+                            return team.every(member => !hasPair(student, member));
+                        });
+
+                        // If no suitable student was found, start from the remaining pool
+                        if (selectedIndex === -1) {
+                            selectedIndex = 0; // Take the first available student
+                        }
+
+                        // Add the selected student to the current team
+                        let selectedStudent = studentsCopy[selectedIndex];
+                        team.push(selectedStudent);
+                        studentsCopy.splice(selectedIndex, 1);
+
+                        // Register the new pairs in this team
+                        team.forEach(member => {
+                            if (member !== selectedStudent) {
+                                addPair(member, selectedStudent);
+                            }
+                        });
+                    }
+
+                    currentSet.push(team);
+                }
+
+                allSets.push(currentSet);
+            }
+
+            return { sets: allSets, pairs: allPairs };
+        }
+
+        function generateAndDisplayTeams() {
+            // Create an array of 30 students
+            const students = Array.from({ length: 32 }, (_, i) => `Student ${i + 1}`);
+
+            // Generate the teams using the function
+            const { sets: teams, pairs } = generateTeams(students, 4, 5);
+
+            // Display the teams in the results div
+            const resultsDiv = document.getElementById('team-results');
+            resultsDiv.innerHTML = '';
+
+            teams.forEach((set, index) => {
+                const setDiv = document.createElement('div');
+                setDiv.className = 'team-set';
+
+                const setTitle = document.createElement('h3');
+                setTitle.textContent = `Team Set ${index + 1}`;
+                setDiv.appendChild(setTitle);
+
+                set.forEach((team, teamIndex) => {
+                    const teamDiv = document.createElement('div');
+                    teamDiv.className = 'team';
+                    teamDiv.textContent = `Team ${teamIndex + 1}: ${team.join(', ')}`;
+                    setDiv.appendChild(teamDiv);
+                });
+
+                resultsDiv.appendChild(setDiv);
+            });
+
+            // Generate the report of repeated teammates
+            const reportDiv = document.getElementById('report-results');
+            reportDiv.innerHTML = '';
+
+            students.forEach(student => {
+                const reportForStudent = [];
+
+                students.forEach(partner => {
+                    if (student !== partner) {
+                        const pairKey = student < partner ? `${student}-${partner}` : `${partner}-${student}`;
+                        const count = pairs.get(pairKey) || 0;
+                        if (count > 1) {
+                            reportForStudent.push(`${partner} (${count} times)`);
+                        }
+                    }
+                });
+
+                if (reportForStudent.length > 0) {
+                    const studentReportDiv = document.createElement('div');
+                    studentReportDiv.className = 'student-report';
+                    studentReportDiv.textContent = `${student}: ${reportForStudent.join(', ')}`;
+                    reportDiv.appendChild(studentReportDiv);
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+<h1>Team Generator with Report</h1>
+<button onclick="generateAndDisplayTeams()">Generate Teams</button>
+<div id="team-results"></div>
+<h2>Repeated Teammates Report</h2>
+<div id="report-results"></div>
+</body>
+</html>

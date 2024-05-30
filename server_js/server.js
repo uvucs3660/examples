@@ -45,7 +45,7 @@ client.on('message', async (topic, message) => {
     await save(path, data);
   } else if (topic.startsWith('load/')) {
     const result = await load(path);
-    client.publish(`data/${path}`, JSON.stringify(result.rows));
+    client.publish(`data/${path}`, JSON.stringify(result.rows[0].data));
   }
 });
 
@@ -66,7 +66,7 @@ app.use(serve("html"));
 router.get('/data/:path*', async (ctx) => {
   let path = ctx.params.path;
   const result = await load(path);
-  ctx.body = result.rows;
+  ctx.body = result.rows[0].data;
 });
 
 // Routes
