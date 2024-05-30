@@ -1,0 +1,67 @@
+import {LitElement, html,css} from 'https://cdn.jsdelivr.net/gh/lit/dist@3/core/lit-core.min.js';
+
+export const sharedStyles = css`
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #2b2b2b;
+    color: #e0e0e0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+
+  .container {
+    background-color: #3c3c3c;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  }
+
+  h1 {
+    text-align: center;
+    color: #ffffff;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  label {
+    margin: 10px 0 5px;
+    color: #b0b0b0;
+  }
+
+  input, select, button {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #555;
+    background-color: #2b2b2b;
+    color: #e0e0e0;
+  }
+
+  input:focus, select:focus, button:focus {
+    outline: none;
+    border-color: #888;
+  }
+
+  button {
+    background-color: #4caf50;
+    color: white;
+    cursor: pointer;
+    border: none;
+  }
+
+  button:hover {
+    background-color: #45a049;
+  }
+
+  #message {
+    text-align: center;
+    color: #4caf50;
+    margin-top: 10px;
+  }
+`;

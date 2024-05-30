@@ -1,3 +1,5 @@
 
 server_js/node_modules/
 client_js/node_modules/
+
+**/.DS_Store

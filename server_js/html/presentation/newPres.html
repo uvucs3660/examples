@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Presentation</title>
+    <link rel="stylesheet" href="styles.css">
+    <script type="module">
+        import { LitElement, html, css } from'https://cdn.jsdelivr.net/gh/lit/dist@3/core/lit-core.min.js';
+
+        class AddPresentationApp extends LitElement {
+            static properties = {
+                presentations: { type: Array }
+            };
+
+            constructor() {
+                super();
+                this.presentations = [];
+                this.loadPresentations();
+            }
+
+            async loadPresentations() {
+                try {
+                    const response = await fetch('/data/project2/presentation');
+                    const data = await response.json();
+                    this.presentations = data.presentations;
+                } catch (error) {
+                    console.error('Error loading presentations:', error);
+                }
+            }
+
+            async savePresentation() {
+                const teamNumber = this.shadowRoot.querySelector('#team-number').value;
+                const teamUrl = this.shadowRoot.querySelector('#team-url').value;
+
+                if (teamNumber && teamUrl) {
+                    this.presentations[teamNumber - 1].url = teamUrl;
+
+                    try {
+                        await fetch('/data/project2/presentation', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ presentations: this.presentations })
+                        });
+                        this.loadPresentations();
+                    } catch (error) {
+                        console.error('Error saving presentations:', error);
+                    }
+                }
+            }
+
+            render() {
+                return html`
+                    <form @submit="${(e) => { e.preventDefault(); this.savePresentation(); }}">
+                        <input type="number" id="team-number" min="1" max="5" placeholder="Team Number" required>
+                        <input type="url" id="team-url" placeholder="Presentation URL" required>
+                        <button type="submit">Save Presentation</button>
+                    </form>
+                `;
+            }
+        }
+
+        customElements.define('add-presentation-app', AddPresentationApp);
+    </script>
+</head>
+<body>
+    <add-presentation-app></add-presentation-app>
+</body>
+</html>
