@@ -3,14 +3,15 @@
 <head>
     <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
     <script src="../node_modules/lit/polyfill-support.js"></script>
-    <script type="module" src="mqtt-login.js"></script>
+    <script type="module" src="login.js"></script>
     <script type="module" src="data.js"></script>
     <script type="module" src="cd-player.js"></script>
-    <script src="./node_modules/mqtt/dist/mqtt.min.js"></script>
-    <script src="./node_modules/xstate/dist/xstate.esm.js"></script>
+    <script src="../node_modules/mqtt/dist/mqtt.min.js"></script>
+    <script src="../node_modules/xstate/dist/xstate.esm.js"></script>
 </head>
 <body>
-    <mqtt-login></mqtt-login>
+    <login-page></login-page>
+    <data-page style="display: none;"></data-page>
     <data-page style="display: none;"></data-page>
     <cd-player></cd-player>
 </body>

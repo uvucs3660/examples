@@ -3,3 +3,5 @@ server_js/node_modules/
 client_js/node_modules/
 
 **/.DS_Store
+
+server_js/html/node_modules/

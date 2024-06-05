@@ -30,7 +30,7 @@ const mqtt = require('mqtt');
 
 // Talking to the mqtt proker
 // Connect to MQTT broker
-const client = mqtt.connect('mqtt://10.0.0.197');
+const client = mqtt.connect('mqtt://mqtt.uvucs.org');
 
 client.on('connect', () => {
   console.log('Connected to MQTT broker');
@@ -55,7 +55,7 @@ client.on('message', async (topic, message) => {
 
 const app = new Koa();
 const router = new Router();
-const port = 3000;
+const port = 8080;
 
 // Middleware
 app.use(cors());

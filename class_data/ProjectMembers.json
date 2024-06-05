@@ -13,7 +13,8 @@
   {
       "MemberId": 2,
       "Name": "Jacob Barrus",
-      "email": "10861146@uvu.edu"
+      "email": "10861146@uvu.edu",
+      "github": "roostercheap"
   },
   {
       "MemberId": 3,
@@ -113,7 +114,8 @@
   {
       "MemberId": 20,
       "Name": "Colten Spencer",
-      "email": "10804538@uvu.edu"
+      "email": "10804538@uvu.edu",
+      "github": "coltenspencer13"
   },
   {
       "MemberId": 21,
@@ -125,7 +127,7 @@
       "MemberId": 22,
       "Name": "Michael Calcamuggio",
       "email": "10927160@uvu.edu",
-      "github": "mcalcamuggio2@gmail.com"
+      "github": "mcalcam"
   },
   {
       "MemberId": 23,
