@@ -30,7 +30,7 @@ const mqtt = require('mqtt');
 
 // Talking to the mqtt proker
 // Connect to MQTT broker
-const client = mqtt.connect('mqtt://10.0.0.197');
+const client = mqtt.connect('mqtt://mqtt.uvucs.org');
 
 client.on('connect', () => {
   console.log('Connected to MQTT broker');
@@ -45,7 +45,7 @@ client.on('message', async (topic, message) => {
     await save(path, data);
   } else if (topic.startsWith('load/')) {
     const result = await load(path);
-    client.publish(`data/${path}`, JSON.stringify(result.rows));
+    client.publish(`data/${path}`, JSON.stringify(result.rows[0].data));
   }
 });
 
@@ -55,7 +55,7 @@ client.on('message', async (topic, message) => {
 
 const app = new Koa();
 const router = new Router();
-const port = 3000;
+const port = 8080;
 
 // Middleware
 app.use(cors());
@@ -66,7 +66,7 @@ app.use(serve("html"));
 router.get('/data/:path*', async (ctx) => {
   let path = ctx.params.path;
   const result = await load(path);
-  ctx.body = result.rows;
+  ctx.body = result.rows[0].data;
 });
 
 // Routes
