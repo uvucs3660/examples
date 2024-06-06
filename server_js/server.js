@@ -30,7 +30,13 @@ const mqtt = require('mqtt');
 
 // Talking to the mqtt proker
 // Connect to MQTT broker
-const client = mqtt.connect('mqtt://mqtt.uvucs.org');
+
+const options = {
+  username: process.env.MQTT_USRER,
+  password: process.env.MQTT_PASS
+}
+
+const client = mqtt.connect('mqtt://mqtt.uvucs.org', options);
 
 client.on('connect', () => {
   console.log('Connected to MQTT broker');
@@ -83,14 +89,3 @@ app.use(router.routes()).use(router.allowedMethods());
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
-
-/*
-GET /mqtt.html HTTP/1.1
-
-printf "%s\r\n" \
-    "GET /need HTTP/1.1" \
-    "Host: localhost" \
-    "" |
-nc localhost 3000
-
-*/
