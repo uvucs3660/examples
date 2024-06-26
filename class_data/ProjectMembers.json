@@ -2,7 +2,8 @@
   {
       "MemberId": 0,
       "Name": "Matthew Whetten",
-      "email": "10685257@uvu.edu"
+      "email": "10685257@uvu.edu",
+      "github": "oakmilkcharlotte"
   },
   {
       "MemberId": 1,
@@ -19,7 +20,8 @@
   {
       "MemberId": 3,
       "Name": "Jessda Say",
-      "email": "10837509@uvu.edu"
+      "email": "10837509@uvu.edu",
+      "github":"jedayo"
   },
   {
       "MemberId": 4,
@@ -53,7 +55,8 @@
   {
       "MemberId": 9,
       "Name": "Andrew Lewis",
-      "email": "10833944@uvu.edu"
+      "email": "10833944@uvu.edu",
+      "github": "Andrewlewis7"
   },
   {
       "MemberId": 10,
@@ -69,25 +72,14 @@
   {
       "MemberId": 12,
       "Name": "Nolen Shubin",
-      "email": "10766374@uvu.edu"
-  },
-  {
-      "MemberId": 13,
-      "Name": "Jared Acosta",
-      "email": "10994857@uvu.edu",
-      "github": "jredisme"
+      "email": "10766374@uvu.edu",
+      "github":"nolenjs"
   },
   {
       "MemberId": 14,
       "Name": "Diana Cervantes",
       "email": "10801985@uvu.edu",
       "github": "dianacdev"
-  },
-  {
-      "MemberId": 15,
-      "Name": "Blake Riding",
-      "email": "10780879@uvu.edu",
-      "github": "ujga"
   },
   {
       "MemberId": 16,
@@ -99,17 +91,6 @@
       "MemberId": 17,
       "Name": "Grayson Pratt",
       "email": "10759809@uvu.edu"
-  },
-  {
-      "MemberId": 18,
-      "Name": "Cameron Hancock",
-      "email": "10929194@uvu.edu"
-  },
-  {
-      "MemberId": 19,
-      "Name": "Jacob Rodgers",
-      "email": "10296776@uvu.edu",
-      "github": "hagspam"
   },
   {
       "MemberId": 20,
@@ -134,10 +115,5 @@
       "Name": "Katie Hancock",
       "email": "10979699@uvu.edu",
       "github": "ChemistryGal"
-  },
-  {
-      "MemberId": 24,
-      "Name": "Jack Scothorne",
-      "email": "10870776@uvu.edu"
   }
-]
+ ]
