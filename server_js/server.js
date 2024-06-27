@@ -24,7 +24,7 @@ const Koa = require('koa');
 const Router = require('koa-router');
 const serve = require('koa-static');
 const cors = require('koa-cors');
-const bodyParser = require('koa-body');
+const { koaBody } = require('koa-body');
 const multer = require('@koa/multer');
 const unzipper = require('unzipper');
 // MQTT
@@ -47,9 +47,9 @@ client.on('connect', () => {
 });
 
 client.on('message', async (topic, message) => {
-  const path = topic.substring(topic.indexOf('/') + 1);
+  const path = topic.substring(topic.indexOf('/') + 1);  
   console.log('Processing: '+ path);
-  if (topic.startsWith('save/')) {
+    if (topic.startsWith('save/')) {
     const data = JSON.parse(message.toString());
     await save(path, data);
   } else if (topic.startsWith('load/')) {
@@ -69,7 +69,7 @@ const upload = multer({ dest: 'uploads/' });
 
 // Middleware
 app.use(cors());
-app.use(bodyParser());
+app.use(koaBody());
 app.use(serve("html"));
 
 // Routes
