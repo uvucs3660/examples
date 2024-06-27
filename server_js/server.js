@@ -1,4 +1,4 @@
-// npm install koa koa-router koa-static koa-cors pg mqtt
+// npm install koa koa-router koa-static koa-cors koa-body @koa/multer
 //
 // path structure
 // class/members
@@ -24,15 +24,17 @@ const Koa = require('koa');
 const Router = require('koa-router');
 const serve = require('koa-static');
 const cors = require('koa-cors');
-const { bodyParser } = require("@koa/bodyparser");
+const bodyParser = require('koa-body');
+const multer = require('@koa/multer');
+const unzipper = require('unzipper');
 // MQTT
 const mqtt = require('mqtt');
 
-// Talking to the mqtt proker
+// Talking to the mqtt broker
 // Connect to MQTT broker
 
 const options = {
-  username: process.env.MQTT_USRER,
+  username: process.env.MQTT_USER,
   password: process.env.MQTT_PASS
 }
 
@@ -46,6 +48,7 @@ client.on('connect', () => {
 
 client.on('message', async (topic, message) => {
   const path = topic.substring(topic.indexOf('/') + 1);
+  console.log('Processing: '+ path);
   if (topic.startsWith('save/')) {
     const data = JSON.parse(message.toString());
     await save(path, data);
@@ -62,6 +65,7 @@ client.on('message', async (topic, message) => {
 const app = new Koa();
 const router = new Router();
 const port = 8080;
+const upload = multer({ dest: 'uploads/' });
 
 // Middleware
 app.use(cors());
@@ -71,16 +75,33 @@ app.use(serve("html"));
 // Routes
 router.get('/data/:path*', async (ctx) => {
   let path = ctx.params.path;
+  console.log("GET path: "+ path);
   const result = await load(path);
   ctx.body = result.rows[0].data;
 });
 
-// Routes
 router.post('/data/:path*', async (ctx) => {
   let path = ctx.params.path;
+  console.log("POST path: "+ path);
   const result = await save(path, ctx.request.rawBody);
   ctx.body = result.rows;
   ctx.body[0]['data'] = ctx.request.body;
+});
+
+// New endpoint for file upload
+router.post('/upload', upload.single('file'), async (ctx) => {
+  const file = ctx.file;
+  const extractPath = path.join(__dirname, 'html');
+
+  // Unzip the file
+  await fs.createReadStream(file.path)
+    .pipe(unzipper.Extract({ path: extractPath }))
+    .promise();
+
+  // Delete the uploaded zip file
+  fs.unlinkSync(file.path);
+
+  ctx.body = { message: 'File uploaded and extracted successfully' };
 });
 
 app.use(router.routes()).use(router.allowedMethods());
