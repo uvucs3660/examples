@@ -65,7 +65,12 @@ client.on('message', async (topic, message) => {
 const app = new Koa();
 const router = new Router();
 const port = 8080;
-const upload = multer({ dest: 'uploads/' });
+const upload = multer({ 
+  dest: 'uploads/',
+  limits: {
+    fileSize: 512 * 1024 * 1024 // 512MB
+  }
+ });
 
 // Middleware
 app.use(cors());
@@ -83,7 +88,8 @@ router.get('/data/:path*', async (ctx) => {
 router.post('/data/:path*', async (ctx) => {
   let path = ctx.params.path;
   console.log("POST path: "+ path);
-  const result = await save(path, ctx.request.rawBody);
+  const jsonStr = JSON.stringify(ctx.request.body);
+  const result = await save(path, jsonStr);
   ctx.body = result.rows;
   ctx.body[0]['data'] = ctx.request.body;
 });
@@ -91,7 +97,8 @@ router.post('/data/:path*', async (ctx) => {
 // New endpoint for file upload
 router.post('/upload', upload.single('file'), async (ctx) => {
   const file = ctx.file;
-  const extractPath = path.join(__dirname, 'html');
+  const uploadname = file.originalname.split(".")[0];
+  const extractPath = path.join(__dirname, 'html/'+ uploadname);
 
   // Unzip the file
   await fs.createReadStream(file.path)
