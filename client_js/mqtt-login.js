@@ -51,7 +51,7 @@ class MqttLogin extends LitElement {
       reconnectPeriod: 1000, // 1 second
     };
 
-    this.client = mqtt.connect('ws://localhost:9001/mqtt', options);
+    this.client = mqtt.connect('mqtt://mqtt.uvucs.org:9001/mqtt', options);
 
     this.client.on('connect', () => {
       console.log('Connected to broker');
